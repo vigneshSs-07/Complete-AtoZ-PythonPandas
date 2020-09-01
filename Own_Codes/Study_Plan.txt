@@ -1,0 +1,14 @@
+#Analytics_Vidhya  --->Pyhton for DS and BA
+
+
+Preprocessing, Subsetting and Modifying Pandas Dataframes
+Apply function
+transform 
+isin
+
+
+https://www.analyticsvidhya.com/blog/2020/03/groupby-pandas-aggregating-data-python/
+https://www.analyticsvidhya.com/blog/2020/02/loc-iloc-pandas/
+https://www.analyticsvidhya.com/blog/2018/04/swiftapply-python-package-makes-apply/
+https://www.analyticsvidhya.com/blog/2020/03/understanding-transform-function-python/
+https://www.analyticsvidhya.com/blog/2020/03/understanding-transform-function-python/?utm_source=blog&utm_medium=groupby-pandas-aggregating-data-python

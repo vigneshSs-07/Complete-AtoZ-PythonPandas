@@ -1,0 +1,46 @@
+
+###############################NLP_TERMS#################################################
+
+de-tokenization
+Document-Term Matrix
+vectorization
+matrix decomposition.
+SVD
+skip-gram
+Continuous Bag of Words  & bag of words 
+unigrams & bigrams. 
+DTM Matrices
+flexible string matching
+Keyword Hashing
+Polysemy 
+cosine similarity 
+ Lesk algorithm-used for word sense disambiguation
+CRF (Conditional Random Field) and HMM (Hidden Markov Model)?
+Non  matrix factorization
+
+https://towardsdatascience.com/introduction-to-word-embeddings-4cf857b12edc
+https://towardsdatascience.com/natural-language-processing-count-vectorization-with-scikit-learn-e7804269bb5e
+https://medium.com/sanrusha-consultancy/natural-language-processing-nlp-and-countvectorizer-5571cf9205e4
+https://www.analyticsvidhya.com/blog/2020/05/what-is-tokenization-nlp/
+
+-------------------
+Word2Vec:
+https://towardsdatascience.com/getting-started-with-text-vectorization-2f2efbec6685
+
+https://github.com/dipanjanS/practical-machine-learning-with-python/blob/master/bonus%20content/feature%20engineering%20text%20data/Feature%20Engineering%20Text%20Data%20-%20Traditional%20Strategies.ipynb
+
+https://analyticsindiamag.com/5-important-techniques-to-process-imbalanced-data-in-machine-learning/
+https://towardsdatascience.com/handling-imbalanced-datasets-in-machine-learning-7a0e84220f28
+https://www.analyticsvidhya.com/blog/2017/03/imbalanced-data-classification/
+
+
+#####################vector space model#############################################################
+
+A vector space model is simply a mathematical model to represent unstructured text (or any other data) as numeric vectors, such that each dimension of the vector is a specific feature\attribute.
+ The bag of words model represents each text document as a numeric vector where each dimension is a specific word from the corpus and the value could be its frequency in the document, occurrence (denoted by 1 or 0) or even weighted values. 
+The model’s name is such because each document is represented literally as a ‘bag’ of its own words, disregarding word orders, sequences and grammar.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+###Codes###
+

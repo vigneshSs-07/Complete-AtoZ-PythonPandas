@@ -1,0 +1,609 @@
+filter   ->
+apply    ->
+get()    ->
+iat()    -> The iat() function is used to access a single value for a row/column pair by integer position.
+
+Error: DataFrame.dtypes for data must be int, float or bool.Did not expect the data types in fields
+Convert it to Numeric
+train_data['length_employed'] = pd.to_numeric(train_data['length_employed'])
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Filtering Multiple Products within a dataframe%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+customerdata_691468_Mul_Products = customerdata_691468[(customerdata_691468.category.isin(['dress', 'jumpsuit', 'cape', 'romper', 'maxi', 'sheath']))]
+
+customerdata_691468_Mul_Products = customerdata_691468_Mul_Products[customerdata_691468_Mul_Products['fit']=='fit']
+customerdata_691468_Mul_Products.shape
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Error: view limit minimum -35756.550000000105 is less than 1 and is an invalid Matplotlib date value. This often happens if you pass a non-datetime value to an axis that has datetime units
+
+
+https://stackoverflow.com/questions/55667169/key-error-none-of-int64index-dtype-int64-are-in-the-columns
+https://stackoverflow.com/questions/57607183/datetime-issue-with-matplotlib
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12,8))
+
+plt.plot(train_data.index, train_data['Size'], label='train_data')
+plt.plot(test_data.index, test_data['Size'], label='test')
+plt.legend(loc='best')
+plt.show()
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Converting Time Series data to respective series time
+
+customer_df_datad['year']=customer_df_datad.Purchase_date.dt.year
+customer_df_datad['month']=customer_df_datad.Purchase_date.dt.month
+customer_df_datad['day']=customer_df_datad.Purchase_date.dt.day
+customer_df_datad['day of week']=customer_df_datad['Purchase_date'].dt.dayofweek 
+customer_df_datad['dayofweek_name']=customer_df_datad['Purchase_date'].dt.day_name()
+customer_df_datad['dayofweek_Names']=customer_df_datad['Purchase_date'].dt.dayofyear
+customer_df_datad['date'] = customer_df_datad['Purchase_date'].dt.date
+import calendar
+customer_df_datad['Month_Name'] = customer_df_datad['month'].apply(lambda x: calendar.month_abbr[x])
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Filtering Pandas DataFrames on dates%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+df.loc['2014-01-01':'2014-02-01']
+
+##http://pandas.pydata.org/pandas-docs/stable/dsintro.html#indexing-selection
+##df[(df['date'] > '2013-01-01') & (df['date'] < '2013-02-01')]
+########https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%KFold Crossvalidation %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+kf  = KFold(n_splits=10)
+scores = []
+pred_test = []
+model = xgboost.XGBClassifier()
+i=1
+for train_index ,test_index in kf.split(X):
+    #print('Train index:',train_index,'Cross_validation index:',test_index)
+    X_train_cv = X.iloc[train_index]
+    X_test_cv = X.iloc[test_index]
+    
+    y_train_cv = y.iloc[train_index]
+    y_test_cv = y.iloc[test_index]
+    
+    model.fit(X_train_cv,y_train_cv)
+    
+    pred = model.predict(X_test_cv)
+    
+    print('validation data f1_score after {} split'.format(i),f1_score(y_test_cv,pred,average='weighted'))
+    i +=1
+    scores.append(f1_score(y_test_cv,pred,average='weighted'))
+    
+    test_predictions = model.predict(test_dummi)
+    pred_test.append(test_predictions)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Add Aggregate Functions to Columns Specified%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+agg_func = {
+    'loan_amount_requested': ['min','max','mean','median','std']    
+}
+agg_func = train.groupby('purpose_of_loan').agg(agg_func)
+agg_func.columns = [ 'purpose_of_loan' + ('_'.join(col).strip()) for col in agg_func.columns.values]
+agg_func.reset_index(inplace=True)
+train = train.merge(agg_func, on=['purpose_of_loan'], how='left')
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%To change OneHotEncoder or label Encoder%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#data_product_combined = pd.get_dummies(data_combined['Product'])
+cs_encoder = pd.DataFrame(customer_fit_data['Product'])
+
+import category_encoders as ce
+# create an object of the OrdinalEncoding
+ce_ordinal = ce.OneHotEncoder(cols=['Product'])   #Ordinal_Encoder
+
+# fit and transform and you will get the encoded data
+fitdata_products_combined = ce_ordinal.fit_transform(cs_encoder)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%To change Column order in DataFrame%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Fit_products_Check = Fit_products_Check[['Feedback', 'Age', 'Product', 'BMI_Name']]
+cols = list(Fit_products_Check.columns.values)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Getting Rid Of Nan Values while performing CONCAT Operation%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+customer_fit_data_dfs_fit_userids.reset_index(drop=True, inplace=True)
+test4_pred_DTC_df.reset_index(drop=True, inplace=True)
+test4_pred_RFC_df.reset_index(drop=True, inplace=True)
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%To FInd the UNique Values in the Dataframe%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+train_data.apply(lambda x: (len(x.unique()))) 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Code to CALCULATE Parse the date%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+def parser(x):
+	return datetime.strptime('190'+x, '%Y-%m')
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Code to CALCULATE Feature Importance between any two algorithms%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+feature_importance=pd.DataFrame({
+    'rfc':rfc.feature_importances_,
+    'dt':dt.feature_importances_
+},index=df.drop(columns=['Loan_ID','Loan_Status']).columns)
+feature_importance.sort_values(by='rfc',ascending=True,inplace=True)
+
+index = np.arange(len(feature_importance))
+fig, ax = plt.subplots(figsize=(18,8))
+rfc_feature=ax.barh(index,feature_importance['rfc'],0.4,color='purple',label='Random Forest')
+dt_feature=ax.barh(index+0.4,feature_importance['dt'],0.4,color='lightgreen',label='Decision Tree')
+ax.set(yticks=index+0.4,yticklabels=feature_importance.index)
+
+ax.legend()
+plt.show()
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Code to CALCULATE Feature Importance of any algorithms%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+feat_imp = pd.Series(model.feature_importances_, index=df_train.drop(["Interest_Rate"], axis=1).columns)
+feat_imp.nlargest(30).plot(kind='barh', figsize=(8,10))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Function to CALCULATE LOGIDTIC REGRESSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+def Snippet_145():
+    print()
+    print(format('How to optimize hyper-parameters of a LR model using Grid Search in Python','*^82'))
+
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    # load libraries
+    import numpy as np
+    from sklearn import linear_model, decomposition, datasets
+    from sklearn.pipeline import Pipeline
+    from sklearn.model_selection import GridSearchCV, cross_val_score
+    from sklearn.preprocessing import StandardScaler
+
+    # Load the iris flower data
+    dataset = datasets.load_iris()
+    X = dataset.data
+    y = dataset.target
+
+    # Create an scaler object
+    sc = StandardScaler()
+
+    # Create a pca object
+    pca = decomposition.PCA()
+
+    # Create a logistic regression object with an L2 penalty
+    logistic = linear_model.LogisticRegression()
+
+    # Create a pipeline of three steps. First, standardize the data.
+    # Second, tranform the data with PCA.
+    # Third, train a logistic regression on the data.
+    pipe = Pipeline(steps=[('sc', sc),
+                           ('pca', pca),
+                           ('logistic', logistic)])
+
+    # Create Parameter Space
+    # Create a list of a sequence of integers from 1 to 30 (the number of features in X + 1)
+    n_components = list(range(1,X.shape[1]+1,1))
+    # Create a list of values of the regularization parameter
+    C = np.logspace(-4, 4, 50)
+    # Create a list of options for the regularization penalty
+    penalty = ['l1', 'l2']
+    # Create a dictionary of all the parameter options 
+    # Note has you can access the parameters of steps of a pipeline by using '__’
+    parameters = dict(pca__n_components=n_components,
+                      logistic__C=C,
+                      logistic__penalty=penalty)
+
+    # Conduct Parameter Optmization With Pipeline
+    # Create a grid search object
+    clf = GridSearchCV(pipe, parameters)
+
+    # Fit the grid search
+    clf.fit(X, y)
+    # View The Best Parameters
+    print('Best Penalty:', clf.best_estimator_.get_params()['logistic__penalty'])
+    print('Best C:', clf.best_estimator_.get_params()['logistic__C'])
+    print('Best Number Of Components:', clf.best_estimator_.get_params()['pca__n_components'])
+    print(); print(clf.best_estimator_.get_params()['logistic'])
+
+    # Use Cross Validation To Evaluate Model
+    CV_Result = cross_val_score(clf, X, y, cv=4, n_jobs=-1)
+    print(); print(CV_Result)
+    print(); print(CV_Result.mean())
+    print(); print(CV_Result.std())
+
+Snippet_145()
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Function to calculate VIF%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# 
+def calculate_vif(data):
+    vif_df = pd.DataFrame(columns = ['Var', 'Vif'])
+    x_var_names = data.columns
+    for i in range(0, x_var_names.shape[0]):
+        y = data[x_var_names[i]]
+        x = data[x_var_names.drop([x_var_names[i]])]
+        r_squared = sm.OLS(y,x).fit().rsquared
+        vif = round(1/(1-r_squared),2)
+        vif_df.loc[i] = [x_var_names[i], vif]
+    return vif_df.sort_values(by = 'Vif', axis = 0, ascending=False, inplace=False)
+
+X=df.drop(['Salary'],axis=1)
+calculate_vif(X)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DateTime%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+https://stackoverflow.com/questions/42687637/how-to-create-and-empty-scatter-plot-with-date-on-the-x-axis-python-pandas
+https://www.earthdatascience.org/courses/use-data-open-source-python/use-time-series-data-in-python/date-time-types-in-pandas-python/
+https://stackoverflow.com/questions/41815126/plot-datetime-date-pandas
+https://stackoverflow.com/questions/21961360/matplotlib-plot-datetime-in-pandas-dataframe
+
+In [32]: def conv(x):
+    return Period(year=x/10000,month=x/100 % 100, day=x%100,freq='D')
+   ....: 
+
+In [33]: converted = df.applymap(conv)
+
+In [34]: converted
+Out[34]: 
+    date_from     date_to
+0  2012-01-01  2012-12-31
+1  2013-01-01  2013-12-31
+2  2014-01-01  2014-12-31
+3  2015-01-01  9999-12-31
+
+In [35]: converted.iloc[3,0]
+Out[35]: Period('2015-01-01', 'D')
+
+In [36]: converted.iloc[3,1]
+Out[36]: Period('9999-12-31', 'D')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Converting the column 'date' from string into datetime object%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+customer_data_df['Purchase_date'] = pd.to_datetime(customer_data_df['Purchase_date'], format='%d %b %Y')
+#customer_data['Date'] = customer_data['Purchase_date'].dt.strftime('%d %b %Y')
+customer_data_df = customer_data_df.drop(['S_num', 'Item_id', 'Us_size','Category'], axis =1) 
+#customer_data_df = customer_data_df.head(5000)
+customer_data_df
+
+# Converting the column 'date' from string into datetime object
+from datetime import datetime
+print("Before converting 'date' column from string to datetime object: {}".format(type(df.iloc[0,0])))
+df['date'] = df['date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+print("After converting 'date' column from string to datetime object: {}".format(type(df.iloc[0,0])))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ML_Algorithm_Function%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+def statistics(variable):
+    if variable.dtype == "int64" or variable.dtype == "float64":
+        return pd.DataFrame([[variable.name, np.mean(variable), np.std(variable), np.median(variable), np.var(variable)]], 
+                            columns = ["Variable", "Mean", "Standard Deviation", "Median", "Variance"]).set_index("Variable")
+    else:
+        return pd.DataFrame(variable.value_counts())
+
+
+
+def graph_histo(x):
+    if x.dtype == "int64" or x.dtype == "float64":
+        # Select size of bins by getting maximum and minimum and divide the substraction by 10
+        size_bins = 10
+        # Get the title by getting the name of the column
+        title = x.name
+        #Assign random colors to each graph
+        color_kde = list(map(float, np.random.rand(3,)))
+        color_bar = list(map(float, np.random.rand(3,)))
+
+        # Plot the displot
+        sns.distplot(x, bins=size_bins, kde_kws={"lw": 1.5, "alpha":0.8, "color":color_kde},
+                       hist_kws={"linewidth": 1.5, "edgecolor": "grey",
+                                "alpha": 0.4, "color":color_bar})
+        # Customize ticks and labels
+        plt.xticks(size=14)
+        plt.yticks(size=14);
+        plt.ylabel("Frequency", size=16, labelpad=15);
+        # Customize title
+        plt.title(title, size=18)
+        # Customize grid and axes visibility
+        plt.grid(False);
+        plt.gca().spines["top"].set_visible(False);
+        plt.gca().spines["right"].set_visible(False);
+        plt.gca().spines["bottom"].set_visible(False);
+        plt.gca().spines["left"].set_visible(False);   
+    else:
+        x = pd.DataFrame(x)
+        # Plot       
+        sns.catplot(x=x.columns[0], kind="count", palette="spring", data=x)
+        # Customize title
+        title = x.columns[0]
+        plt.title(title, size=18)
+        # Customize ticks and labels
+        plt.xticks(size=14)
+        plt.yticks(size=14);
+        plt.xlabel("")
+        plt.ylabel("Counts", size=16, labelpad=15);        
+        # Customize grid and axes visibility
+        plt.gca().spines["top"].set_visible(False);
+        plt.gca().spines["right"].set_visible(False);
+        plt.gca().spines["bottom"].set_visible(False);
+        plt.gca().spines["left"].set_visible(False);
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Encoding categorical features%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+numerics = ['int8', 'int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+categorical_columns = []
+features = train0.columns.values.tolist()
+for col in features:
+    if train0[col].dtype in numerics: continue
+    categorical_columns.append(col)
+# Encoding categorical features
+for col in categorical_columns:
+    if col in train0.columns:
+        le = LabelEncoder()
+        le.fit(list(train0[col].astype(str).values))
+        train0[col] = le.transform(list(train0[col].astype(str).values))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Plotting MUltiple dist plots%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+survived = 'survived'
+not_survived = 'not survived'
+fig, axes = plt.subplots(nrows=1, ncols=2,figsize=(10, 4))
+women = train_df[train_df['Sex']=='female']
+men = train_df[train_df['Sex']=='male']
+ax = sns.distplot(women[women['Survived']==1].Age.dropna(), bins=18, label = survived, ax = axes[0], kde =False)
+ax = sns.distplot(women[women['Survived']==0].Age.dropna(), bins=40, label = not_survived, ax = axes[0], kde =False)
+ax.legend()
+ax.set_title('Female')
+ax = sns.distplot(men[men['Survived']==1].Age.dropna(), bins=18, label = survived, ax = axes[1], kde = False)
+ax = sns.distplot(men[men['Survived']==0].Age.dropna(), bins=40, label = not_survived, ax = axes[1], kde = False)
+ax.legend()
+_ = ax.set_title('Male')
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Extracting titles%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Titanic dataset example
+
+data = [train_df, test_df]
+titles = {"Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5}
+for dataset in data:
+    # extract titles
+    dataset['Title'] = dataset.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
+    # replace titles with a more common title or as Rare
+
+    dataset['Title'] = dataset['Title'].replace(['Lady', 'Countess','Capt', 'Col','Don', 'Dr',\
+                                            'Major', 'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
+    dataset['Title'] = dataset['Title'].replace('Mlle', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Ms', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Mme', 'Mrs')
+    # convert titles into numbers
+    dataset['Title'] = dataset['Title'].map(titles)
+    # filling NaN with 0, to get safe
+    dataset['Title'] = dataset['Title'].fillna(0)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Adding_NewDataframe_from_existing_dataframe%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+df_data = pd.value_counts(customer_hist_Dresses['User_id']).head()
+dataframe_cust = pd.DataFrame({'Customer_id':df_data.index, 'Number_of_Transcations':df_data.values})
+dataframe_cust
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Dropping_rows_and_Columns%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+-----> Use inplace= True to replace it in real dataframe
+
+#Dropping values in row
+customer_rows_columns.drop([2, 3], axis =0).head()
+
+#Drop a row if it contains a certain value (in this case, “gown”)
+customer_rows_columns[customer_rows_columns.Product != 'gown'].head()
+
+#Drop a row by row number (in this case, row 3)
+customer_rows_columns.drop(customer_rows_columns.index[1]).head()
+
+# can be extended to dropping a range
+customer_rows_columns.drop(customer_rows_columns.index[2:5]).head()
+
+#Dropping values in columns
+customer_rows_columns.drop('Size', axis=1)
+
+#Dropping multiple values in columns
+customer_rows_columns.drop(['Size', 'Category'], axis=1)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Calculating_sumofvalues_in_a_column_by_anothercolumn%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+Use of groupby code ::
+
+======>>confidence_for_higher_value_alpha = alphabet_display_alpha.groupby([ 'Confidence'],sort=False, as_index = False).max()
+
+ 	Bust 	Count 	Confidence 	Size_in_alphabet 	New_confidence
+0 	39.50 	7 	19.444444 	L 	                19.444444
+1 	40.25 	7 	19.444444 	L 			19.444444
+2 	41.00 	7 	19.444444 	L 			19.444444
+3 	42.25 	7 	19.444444 	L 			19.444444
+4 	48.00 	2 	5.555556 	L 			5.555556
+5 	49.25 	2 	5.555556 	L 			5.555556
+6 	50.50 	2 	5.555556 	L 			5.555556
+7 	51.63 	2 	5.555556 	L 			5.555556
+
+
+confidence_Sum_for_higher_value_alpha = alphabet_display_alpha.groupby('Confidence')['New_confidence'].transform('sum')
+confidence_Sum_for_higher_value_alpha = confidence_Sum_for_higher_value_alpha[0]
+confidence_Sum_for_higher_value_alpha
+
+Output : 77.77777777777779
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%Map the lowering(upering) function to all column names%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+df.columns = map(str.lower, df.columns)
+a.columns = map(str.upper, a.columns)
+
+
+data.columns = [x.lower() for x in data.columns]
+df.columns = df.columns.str.lower()
+c-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%Map the lowering(upering) function to all column names%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+ValueError: Target is multiclass but average='binary'. Please choose another average setting, one of [None, 'micro', 'macro', 'weighted'].
+
+Sol :    "ADD this in pos_label='positive', average='micro'"
+trainprd= clf.predict(train_x)
+k=f1_score(trainprd, train_y, pos_label='positive', average='micro')
+print("The Values of train data is", k)
+
+testprd=clf.predict(test_x)
+k1=f1_score(testprd, test_y, pos_label='positive',average='micro')
+print("The value os test data is", k1)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%GroupBy In Pandas%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+merged_data = df.groupby(['Bust', 'Us_size']).agg({'Bust': 'count'})
+Fit_bustsize_Count = Historycustomer_product.groupby('Bust').count()[['Us_size']]
+Fit_bustsize_Count = Historycustomer_product.groupby(['Bust', 'Us_size']).size()
+Fit_bustsize_Count = Historycustomer_product.groupby(['Bust', 'Us_size']).Us_size.agg('count').to_frame('Count').reset_index()
+Fit_bustsize_Count = Historycustomer_product.groupby(['Bust', 'Us_size', 'Size_in_alphabet']).Bust.agg('count').to_frame('Count').reset_index()   ==>Most_Useful
+Fit_bustsize_Count = Historycustomer_product.groupby(['Bust', 'Us_size']).Bust.agg('count').to_frame('Count').sort_values(['Count'],ascending=False).reset_index()  =>Use Sorting function
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%GroupBy In Pandas- Need to filter records with a specific counts%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+====> customer_selection.groupby('Counts').filter(lambda x: len(x) >= 30)
+
+====> filtered = df.groupby('positions')['r vals'].filter(lambda x: len(x) >= 3)
+df[df['r vals'].isin(filtered)]
+
+====> THRESHOLD2 = 2
+df1 = df.groupby('A').filter(lambda x: x['B'].nunique() >= THRESHOLD2)
+print (df1)
+--------------------------------------------------------------------------------------------------------------------
+customer_fit_count_Num = customer_fit_count[customer_fit_count['Size_convention'].str.contains('Num')]
+customer_fit_count_Num
+
+(or)
+
+customer_fit_count_Num = customer_fit_count[customer_fit_count['Size_convention'] == 'Num']
+customer_fit_count_Num
+
+Both doe sthe same function
+--------------------------------------------------------------------------------------------------------------------
+
+
+Aggregate_Functions
+
+    mean(): Compute mean of groups
+    sum(): Compute sum of group values
+    size(): Compute group sizes
+    count(): Compute count of group
+    std(): Standard deviation of groups
+    var(): Compute variance of groups
+    sem(): Standard error of the mean of groups
+    describe(): Generates descriptive statistics
+    first(): Compute first of group values
+    last(): Compute last of group values
+    nth() : Take nth value, or a subset if n is a list
+    min(): Compute min of group values
+    max(): Compute max of group values
+    skew() : Skewness of preTestScore values
+    kurt() : Kurtosis of TestScore_1 values
+    corr() :Correlation Matrix Of Values
+    cov()  :Covariance Matrix Of Values
+
+### mode is not part of aggregate function ---> pd.Series.mode
+
+dataset.groupby(['Outlet_Location_Type','Outlet_Establishment_Year'],as_index = False).agg({'Outlet_Size':pd.Series.mode,'Item_Outlet_Sales':np.mean})
+
+
+def weight_mean(w):
+    def _weight_mean(d):
+         try:
+             return (d * w).sum() / w[d.index].sum()
+         except ZeroDivisionError:
+             return np.NaN
+    return _weight_mean
+f = {'New_Product_Price': [np.mean, weight_mean(sales.Quantity)]}
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%convert dtype('O') to dtype('int64')%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+customer_fit_count['Us_size'] = customer_fit_count['Us_size'].astype(str).astype('int64')   #dtype('int64')
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%Leap_Year%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+def is_leap(year):
+    leap = False
+    
+    if(year%4 == 0):
+        leap = True
+        if(year%100 == 0):
+            leap = False
+            if(year % 400 ==0):
+                leap = True
+    return leap
+
+year = int(input('Enter the year: '))
+print(is_leap(year))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%isin_Function%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+isin     -> function(When you want to filter values from a list)
+
+#One Method to do it, to get result as a dataframe   ---> It is passed as a list
+cust_historyasheath_CustomerBuyProduct = cust_history[cust_history['User_id'].isin(pd.Series(sheath_lit))]
+cust_historyasheath_CustomerBuyProduct   
+
+#Other method to do it to get boolean function  ---> It is passed as a tuple
+sheath_CustomerBuyProduct = (cust_history['User_id'].isin(pd.Series(sheath_lit)))
+sheath_CustomerBuyProduct
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+

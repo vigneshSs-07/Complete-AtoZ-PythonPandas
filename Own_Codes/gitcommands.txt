@@ -1,0 +1,22 @@
+git init
+git remote add origin <url>  -SSH Key
+git remote -v
+git add .
+git commit 
+git push  (git push -f origin master)  git push -u origin master
+
+
+
+
+https://medium.com/machine-learning-algorithms-from-scratch/k-means-clustering-from-scratch-in-python-1675d38eee42
+https://www.researchgate.net/post/How_can_I_combine_content_based_recommender_system_with_K-means_clustering
+BlackRabbitt/RecommenderSystem
+https://medium.com/machine-learning-algorithms-from-scratch/k-means-clustering-from-scratch-in-python-1675d38eee42
+https://towardsdatascience.com/clustering-algorithms-for-customer-segmentation-af637c6830ac
+https://www.ritchieng.com/machine-learning-project-customer-segments/
+
+
+
+https://medium.com/@abhay.gandotra/customer-segmentation-using-k-means-d5cb17c2e7dd
+https://towardsdatascience.com/customer-segmentation-using-k-means-clustering-d33964f238c3
+https://www.business-science.io/business/2016/08/07/CustomerSegmentationPt1.html

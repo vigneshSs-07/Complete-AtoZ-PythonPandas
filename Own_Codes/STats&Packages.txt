@@ -1,0 +1,7 @@
+from scipy import stats
+stats.ks_2samp(iris_virginica_SW, iris_versicolor_SW)
+x = stats.norm.rvs(loc=0.2, size=10)
+stats.kstest(x,'norm')
+
+
+https://towardsdatascience.com/let-us-understand-the-correlation-matrix-and-covariance-matrix-d42e6b643c22#78e7

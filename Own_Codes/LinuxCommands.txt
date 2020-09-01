@@ -1,0 +1,66 @@
+Moving from one directory to other directory
+
+
+
+
+Listing all folders in Folders
+
+-> dir /s
+
+
+https://www.google.com/search?client=firefox-b-d&q=ValueError%3A+You+must+specify+a+period+or+x+must+be+a+pandas+object+with+a+DatetimeIndex+with+a+freq+not+set+to+None
+
+
+https://www.quora.com/What-is-the-local-minimum-and-global-minimum-in-machine-learning-Why-are-these-important-in-machine-learning
+https://www.mathworks.com/help/optim/ug/local-vs-global-optima.html
+https://www.quora.com/Whats-the-difference-between-gradient-descent-and-stochastic-gradient-descent
+https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31
+https://machinelearningmastery.com/what-is-maximum-likelihood-estimation-in-machine-learning/
+
+
+https://www.quora.com/What-is-the-meaning-of-latent-space
+https://www.quora.com/What-are-latent-spaces-in-representation-learning
+https://implicit.readthedocs.io/en/latest/lmf.html
+https://web.stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf 
+https://machinelearningmastery.com/what-is-maximum-likelihood-estimation-in-machine-learning/
+
+
+Time_Series_Retail
+http://home.ubalt.edu/ntsbarsh/stat-data/Forecast.htm
+https://www.sciencedirect.com/topics/medicine-and-dentistry/time-series-analysis
+https://cb4.com/blog/time-series-forecasting-challenges/
+https://www.researchgate.net/publication/305473407_Time_Series_Analysis_of_Consumer_Conversion_Behavior_for_an_Online_Retail_Store
+https://acadpubl.eu/hub/2018-119-12/articles/7/1736.pdf
+https://towardsdatascience.com/an-end-to-end-project-on-time-series-analysis-and-forecasting-with-python-4835e6bf050b
+https://www.abs.gov.au/websitedbs/d3310114.nsf/home/time+series+analysis:+the+basics
+https://www.stitchlabs.com/learning-center/what-is-demand-forecasting-in-retail/
+https://www.semanticscholar.org/paper/A-Model-to-Prevent-Stockouts-in-Retail-using-Time-Gemmink/49bbcd2eb4b53ba3f9d11e7bba4c70324c40f772
+
+
+****************************************************************************************************************
+29Jul2020 - Assigning weights
+
+http://mathforum.org/library/drmath/view/72033.html
+
+https://www.fharrell.com/post/score-data-reduction/
+
+https://blogs.sas.com/content/iml/2017/10/02/weight-variables-in-statistics-sas.html
+
+http://www2.mitre.org/work/sepo/toolkits/STEP/files/ScoringMethodsContent.pdf
+
+****************************************************************************************************************
+
+
+
+
+
+
+****************************************************************From Ankur in June **************************************
+https://www.kaggle.com/rmisra/clothing-fit-dataset-for-size-recommendation
+
+https://towardsdatascience.com/would-this-clothing-fit-me-5c3792b7a83f
+
+https://cseweb.ucsd.edu/~jmcauley/pdfs/recsys18e.pdf
+
+****************************************************************************************************************
+

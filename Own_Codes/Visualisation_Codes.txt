@@ -1,0 +1,23 @@
+#Visualisation_Codes
+
+######################################### Plot number of reviews for top 50 products ########################################################
+
+products = customer_data_Sentiments_S.category.value_counts()
+plt.figure(figsize=(12,8))
+products[:30].plot(kind='bar')
+plt.title("Number of Products for more than 30 Transcations")
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%MAtplot_Lib%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+table=pd.crosstab(data.education,data.y)
+table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
+plt.title('Stacked Bar Chart of Education vs Purchase')
+plt.xlabel('Education')
+plt.ylabel('Proportion of Customers')
+plt.savefig('edu_vs_pur_stack')
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

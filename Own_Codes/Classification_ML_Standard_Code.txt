@@ -1,0 +1,191 @@
+####import_libraries
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+sns.set_style('darkgrid')
+pd.set_option("display.max_colwidth", None)
+
+--------------------------------------------------------------------------------------------------------------------------------------
+# Function to run different model types
+
+def fit_model(X, y, model_name='lr', model_type=LogisticRegression()):
+    
+    # Pipeline for pre-processing
+    pipe = Pipeline([
+        ('scale', StandardScaler()),
+        (model_name, model_type)
+    ])
+    # Fit the model 
+    model = pipe.fit(X, y)
+    
+    #Score
+    score = model.score(X, y)
+                   
+    # Print attributes
+    print(f"For model: {model_type}")
+#     print(f"Score: {score}")
+    
+    return model
+-------------------------------------------------------------------
+
+
+def evaluate_model(model, X_train, X_test, y_train, y_test):
+    # Evaluate training data
+    preds_train = model.predict(X_train)
+    score_train = model.score(X_train, y_train)
+
+    # Evaluate testing data
+    preds_test = model.predict(X_test)
+    score_test = model.score(X_test, y_test)
+    
+    # Print results
+    
+    print(f'Train Score: {score_train:.4f}')
+    print(f'Test Score: {score_test:.4f}')
+
+---------------------------------------------------------
+
+logreg = fit_model(X_train, y_train, model_name='logreg', model_type=LogisticRegression())
+
+evaluate_model(logreg, X_train, X_test, y_train, y_test)
+
+--------------------------------------------------------------
+
+knn = fit_model(X_train, y_train, model_name='knn', model_type=KNeighborsClassifier())
+
+evaluate_model(knn, X_train, X_test, y_train, y_test)
+
+--------------------------------------------------
+
+dtc = fit_model(X_train, y_train, model_name='dtc', model_type=DecisionTreeClassifier())
+
+evaluate_model(dtc, X_train, X_test, y_train, y_test)
+
+----------------------------------------------------------------------
+
+rf = fit_model(X_train, y_train, model_name='rf', model_type=RandomForestClassifier())
+
+evaluate_model(rf, X_train, X_test, y_train, y_test)
+
+-----------------------------------------------------------------------------
+
+
+
+ada = fit_model(X_train, y_train, model_name='ada', model_type=AdaBoostClassifier())
+
+evaluate_model(ada, X_train, X_test, y_train, y_test)
+-----------------------------------------------------------------------
+
+
+
+bag = fit_model(X_train, y_train, model_name='bag', model_type=BaggingClassifier())
+
+evaluate_model(bag, X_train, X_test, y_train, y_test)
+
+-------------------------------------------------------------------------------
+
+
+#To Create A DataFrame at the end For Regression
+
+# Creating a function for GridSearchCV
+
+def find_best_model(X,y):
+    models = {
+        'linear_regression': {
+            'model': LinearRegression(),
+            'parameters': {
+                'normalize': [True,False]
+            }
+        },
+        
+        'lasso': {
+            'model': Lasso(),
+            'parameters': {
+                'alpha': [1,2],
+                'selection': ['random', 'cyclic']
+            }
+        },
+        
+        'decision_tree': {
+            'model': DecisionTreeRegressor(),
+            'parameters': {
+                'criterion': ['mse', 'friedman_mse'],
+                'splitter': ['best', 'random']
+            }
+        }
+    }
+    
+    scores = []
+    cv_X_y = ShuffleSplit(n_splits=5, test_size=0.20, random_state=0)
+    
+    for model_name, model_params in models.items():
+        gs = GridSearchCV(model_params['model'], model_params['parameters'], cv=cv_X_y, return_train_score=False)
+        gs.fit(X,y)
+        scores.append({
+            'model': model_name,
+            'best_parameters': gs.best_params_,
+            'accuracy': gs.best_score_
+        })
+        
+    return pd.DataFrame(scores, columns=['model', 'best_parameters', 'accuracy'])
+
+find_best_model(X, y)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#To Create A DataFrame at the end For Classification
+
+
+def find_best_model(X, y):
+    models = {
+        'logistic_regression': {
+            'model': LogisticRegression(solver='lbfgs', multi_class='auto'),
+            'parameters': {
+                'C': [1,5,10]
+               }
+        },
+        
+        'decision_tree': {
+            'model': DecisionTreeClassifier(splitter='best'),
+            'parameters': {
+                'criterion': ['gini', 'entropy'],
+                'max_depth': [5,10]
+            }
+        },
+        
+        'random_forest': {
+            'model': RandomForestClassifier(criterion='gini'),
+            'parameters': {
+                'n_estimators': [10,15,20,50,100,200]
+            }
+        },
+        
+        'svm': {
+            'model': SVC(gamma='auto'),
+            'parameters': {
+                'C': [1,10,20],
+                'kernel': ['rbf','linear']
+            }
+        }
+
+    }
+    
+    scores = [] 
+    cv_shuffle = ShuffleSplit(n_splits=5, test_size=0.20, random_state=0)
+        
+    for model_name, model_params in models.items():
+        gs = GridSearchCV(model_params['model'], model_params['parameters'], cv = cv_shuffle, return_train_score=False)
+        gs.fit(X, y)
+        scores.append({
+            'model': model_name,
+            'best_parameters': gs.best_params_,
+            'score': gs.best_score_
+        })
+    return pd.DataFrame(scores, columns=['model','best_parameters','score'])
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
